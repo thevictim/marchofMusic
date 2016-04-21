@@ -83,20 +83,23 @@ app.get('/db', function (request, response) {
   //      { response.render('pages/db', {results: result.rows} ); }
   //   });
   // });
-var result = [];
-// allsong.exec(function(err, docs){
-//         if (err) throw err;
-//         docs.forEach(function(doc){
-//           // console.log( 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] + 
-//           //   ' topped the charts for ' + doc['weeksAtOne'] + ' straight weeks.');
-//         console.log(doc['song']);
-//         result.push(doc['song']);
-//         });
+var result = ['haha'];
+allsong.exec(function(err, docs){
+        if (err) throw err;
+        docs.forEach(function(doc){
+          // console.log( 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] + 
+          //   ' topped the charts for ' + doc['weeksAtOne'] + ' straight weeks.');
+        var temp = doc['song'];
+        
+        if (result.indexOf(temp)== -1) {
+          result.push(temp);
 
-
-//       });
-  console.log(allsong);
+        }
+        });
+  // console.log("inner:" + result);
   response.send(result);
+      });
+  
 
 });
 
