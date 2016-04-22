@@ -1,13 +1,29 @@
-var cool = require('cool-ascii-faces');
 var express = require('express');
 var app = express();
-var pg = require('pg');
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
 var mongoose = require('mongoose');
+var path = require('path');
+
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
+app.use(bodyParser.json());
+app.set('port', (process.env.PORT || 5000));
+// app.use(express.static(__dirname + '/public'));
+
 var allsong;
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI ,function(err){
+  if(err) throw err;
+  app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
+});
+
+
+
 var db = mongoose.connection;
-db.on('error', console.error.bind('connection error:'));
+
 db.once('open', function callback (){
   var songSchema = mongoose.Schema({
     decade: String,
@@ -63,15 +79,11 @@ db.once('open', function callback (){
 });
 
 
-app.set('port', (process.env.PORT || 5000));
 
-app.use(express.static(__dirname + '/public'));
 
 // views is directory for all template files
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-
-
+// app.set('views', __dirname + '/views');
+// app.set('view engine', 'ejs');
 
 app.get('/db', function (request, response) {
   // pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -83,8 +95,8 @@ app.get('/db', function (request, response) {
   //      { response.render('pages/db', {results: result.rows} ); }
   //   });
   // });
-var result = ['haha'];
-allsong.exec(function(err, docs){
+  var result = ['haha'];
+  allsong.exec(function(err, docs){
         if (err) throw err;
         docs.forEach(function(doc){
           // console.log( 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] + 
@@ -97,28 +109,14 @@ allsong.exec(function(err, docs){
         }
         });
   // console.log("inner:" + result);
-  response.send(result);
+    response.send(result);
       });
   
-
 });
 
 app.get('/', function(request, response) {
-  response.render('pages/index')
+  // response.send('ga');
+  response.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.get('/too', function(request, response) {
-  var result = ''
-  var times = process.env.TIMES || 5
-  for (i=0; i < times; i++)
-    result += cool();
-  response.send(result);
-});
 
-app.get('/cool', function(request, response) {
-  response.send(cool());
-});
-
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
