@@ -5,7 +5,7 @@ var methodOverride = require('method-override');
 var mongoose = require('mongoose');
 var path = require('path');
 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.set('port', (process.env.PORT || 5000));
