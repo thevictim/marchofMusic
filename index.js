@@ -15,6 +15,7 @@ var allsong;
 
 mongoose.connect(process.env.MONGODB_URI ,function(err){
   if(err) throw err;
+  console.log('Database connected');
   app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
@@ -85,38 +86,38 @@ db.once('open', function callback (){
 // app.set('views', __dirname + '/views');
 // app.set('view engine', 'ejs');
 
-app.get('/db', function (request, response) {
-  // pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-  //   client.query('SELECT * FROM test_table', function(err, result) {
-  //     done();
-  //     if (err)
-  //      { console.error(err); response.send("Error " + err); }
-  //     else
-  //      { response.render('pages/db', {results: result.rows} ); }
-  //   });
-  // });
-  var result = ['haha'];
-  allsong.exec(function(err, docs){
-        if (err) throw err;
-        docs.forEach(function(doc){
-          // console.log( 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] + 
-          //   ' topped the charts for ' + doc['weeksAtOne'] + ' straight weeks.');
-        var temp = doc['song'];
+// app.get('/db', function (request, response) {
+//   // pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+//   //   client.query('SELECT * FROM test_table', function(err, result) {
+//   //     done();
+//   //     if (err)
+//   //      { console.error(err); response.send("Error " + err); }
+//   //     else
+//   //      { response.render('pages/db', {results: result.rows} ); }
+//   //   });
+//   // });
+//   var result = ['haha'];
+//   allsong.exec(function(err, docs){
+//         if (err) throw err;
+//         docs.forEach(function(doc){
+//           // console.log( 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] + 
+//           //   ' topped the charts for ' + doc['weeksAtOne'] + ' straight weeks.');
+//         var temp = doc['song'];
         
-        if (result.indexOf(temp)== -1) {
-          result.push(temp);
+//         if (result.indexOf(temp)== -1) {
+//           result.push(temp);
 
-        }
-        });
-  // console.log("inner:" + result);
-    response.send(result);
-      });
+//         }
+//         });
+//   // console.log("inner:" + result);
+//     response.send(result);
+//       });
   
-});
+// });
 
-app.get('/', function(request, response) {
-  // response.send('ga');
-  response.sendFile(path.join(__dirname + '/index.html'));
-});
+// app.get('/', function(request, response) {
+//   // response.send('ga');
+//   // response.sendFile(path.join(__dirname + '/index.html'));
+// });
 
 

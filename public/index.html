@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="trashApp" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!-- Angular lib -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular-route.min.js"></script>
+    
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="/js/angular-timeline.css"/>
+    <link rel="/js/timeline.css"/>
+
+
+
+
+
+    <!-- Create some padding for body -->
+    <style>
+      body {
+        min-height: 2000px;
+        padding-top: 70px;
+      }
+    </style>
+
+    
+  </head>
+
+  <body >
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <div class="navbar-brand" href="#/">mLab Contact List</div>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#/">Home</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- <timeline >
+    <timeline-event ng-repeat="event in events" side="right">
+      <p>{{event}}</p>
+      <p>asd</p>
+      <timeline-badge class="{{event.badgeClass}}">
+        <i class="glyphicon {{event.badgeIconClass}}"></i>
+      </timeline-badge>
+      <timeline-panel class="{{event.badgeClass}}">
+        <timeline-heading>
+          <h4>{{event.title}}</h4>
+        </timeline-heading>
+        <p>{{event.content}}</p>
+      </timeline-panel>
+    </timeline-event>
+  </timeline> -->
+
+  
+<!-- The Timeline -->
+
+<ul class="timeline">
+
+  <!-- Item 1 -->
+  <li>
+    <div class="direction-r">
+      <div class="flag-wrapper">
+        <span class="flag">Freelancer</span>
+        <span class="time-wrapper"><span class="time">2013 - present</span></span>
+      </div>
+      <div class="desc">My current employment. Way better than the position before!</div>
+    </div>
+  </li>
+  
+  <!-- Item 2 -->
+  <li>
+    <div class="direction-l">
+      <div class="flag-wrapper">
+        <span class="flag">Apple Inc.</span>
+        <span class="time-wrapper"><span class="time">2011 - 2013</span></span>
+      </div>
+      <div class="desc">My first employer. All the stuff I've learned and projects I've been working on.</div>
+    </div>
+  </li>
+
+  <!-- Item 3 -->
+  <li>
+    <div class="direction-r">
+      <div class="flag-wrapper">
+        <span class="flag">Harvard University</span>
+        <span class="time-wrapper"><span class="time">2008 - 2011</span></span>
+      </div>
+      <div class="desc">A description of all the lectures and courses I have taken and my final degree?</div>
+    </div>
+  </li>
+  
+</ul>
+
+
+
+
+    <!-- Dynamically render templates -->
+    <!-- <div class="container" ng-view> -->
+    <!-- </div> -->
+    <script src="/js/angular-timeline.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/controller.js"></script>
+  </body>
+</html>
