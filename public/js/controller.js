@@ -1,9 +1,6 @@
-// 'use strict';
+'use strict';
 // var ctrs = angular.module('trashApp',[]);
 angular.module('trashApp').controller('ExampleCtrl', ['$scope', function($scope) {
-    console.log('here ');
-
-
         var lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. " +
                       "Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor." +
                       "Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, " +
@@ -38,22 +35,22 @@ angular.module('trashApp').controller('ExampleCtrl', ['$scope', function($scope)
                 badgeClass: 'info',
                 badgeIconClass: 'glyphicon-check',
                 title: 'First heading',
-                when: '3 hours ago via Twitter',
+                when: '30 hours ago via Twitter',
                 content: 'Some awesome content.'
             });
 
         };
         // optional: not mandatory (uses angular-scroll-animate)
-        // $scope.animateElementIn = function($el) {
-        //     $el.removeClass('timeline-hidden');
-        //     $el.addClass('bounce-in');
-        // };
+        $scope.animateElementIn = function($el) {
+            $el.removeClass('timeline-hidden');
+            $el.addClass('bounce-in');
+        };
 
         // optional: not mandatory (uses angular-scroll-animate)
-        // $scope.animateElementOut = function($el) {
-        //     $el.addClass('timeline-hidden');
-        //     $el.removeClass('bounce-in');
-        // };
+        $scope.animateElementOut = function($el) {
+            $el.addClass('timeline-hidden');
+            $el.removeClass('bounce-in');
+        };
 
         $scope.leftAlign = function() {
             $scope.side = 'left';
