@@ -17,22 +17,24 @@ mongoose.connect(process.env.MONGODB_URI ,function(err){
   if(err) throw err;
   console.log('Database connected');
   app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
+    console.log('Node app is running on port', app.get('port'));
+  });
 });
 
 
 
 var db = mongoose.connection;
 
+var albumSchema = mongoose.Schema({
+  artist: String,
+  name: String, 
+  year: Number,
+  imageurl: String
+});
+var Album = mongoose.model('albums', albumSchema);
+
 db.once('open', function callback (){
-  var albumSchema = mongoose.Schema({
-    artist: String,
-    name: String, 
-    year: Number,
-    imageurl: String
-  });
-  var Album = mongoose.model('albums', albumSchema);
+
   // Create seed data
   var pf = new Album({
     artist: 'Pink Floyd',
@@ -44,74 +46,78 @@ db.once('open', function callback (){
 
   pf.save();
 
-
-  // Album.update( {song:'One Sweet Day'}, {$set:{artist: 'Mariah Carey'}},
-  //   function (err, numberAffected, raw){
-  //     if (err) return handleError(error);
-  //     allsong = Album.find({weeksAtOne: {$gte: 10}}).sort({decade: 1});
-  //     // allsong.exec(function(err, docs){
-  //     //   if (err) throw err;
-  //     //   docs.forEach(function(doc){
-  //     //     console.log( 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] + 
-  //     //       ' topped the charts for ' + doc['weeksAtOne'] + ' straight weeks.');
-
-  //     //   });
-
-
-  //     // });
-  //   }
-
-  //   );
-
 });
 
 
-app.post("/sendArtist", function(req, res) {
-console.log('hahahahahah');
-  var newArtist = req.body.who;
-
-  if (!req.body) {
+app.post("/sendList", function(req, res) {
+  console.log('------------------------node post------------------------');
+  var albumList = req.body.list;
+  console.log('parse');
+  console.log(req.body);
+  if (!req.body.list) {
     handleError(res, "Invalid user input", "Must provide a first or last name.", 400);
   }
 
-var searchAlbums = function (query) {
-    $.ajax({
-        url: 'https://api.spotify.com/v1/search',
-        data: {
-            q: query,
-            type: 'album'
-        },
-        success: function (response) {
-          for (album in response.albums.items){
+  // var searchAlbums = function (query) {
+  //   $.ajax({
+  //     url: 'https://api.spotify.com/v1/search',
+  //     data: {
+  //       q: query,
+  //       type: 'album'
+  //     },
+  //     success: function (response) {
+  //       for (album in response.albums.items){
 
-                        var newAlbum = new Album({
-                          artist: album.artist.name,
-                          name: album.name, 
-                          year: album.release_date,
-                          imageurl: album.images[0].url
-                        });
+  //         var newAlbum = new Album({
+  //           artist: album.artist.name,
+  //           name: album.name, 
+  //           year: album.release_date,
+  //           imageurl: album.images[0].url
+  //         });
 
-                        db.collection(albums).insertOne(newAlbum, function(err, doc) {
-                            if (err) {
-                              handleError(res, err.message, "Failed to create new contact.");
-                            } else {
-                              res.status(201).json(doc.ops[0]);
-                            }
-                          });
+  //         db.collection(albums).insertOne(newAlbum, function(err, doc) {
+  //           if (err) {
+  //             handleError(res, err.message, "Failed to create new contact.");
+  //           } else {
+  //             res.status(201).json(doc.ops[0]);
+  //           }
+  //         });
 
-                        }      
-                }
+  //       }      
+  //     }
+  //   });
+  // };
+  for (album in albumList){
+    var newAlbum = new Album({
+      artist: album.artist,
+      name: album.name, 
+      year: album.year,
+      imageurl: album.imageurl
     });
-};
-    searchAlbums(newArtist);
-    console.log(newArtist);
-  });
+
+    Album.collection.insert(newAlbum, function(err, doc) {
+      if (err) {
+        handleError(res, err.message, "Failed to create new contact.");
+      } else {
+        res.status(201).json(doc.ops[0]);
+      }
+    });
+
+  }
+
+
+  // searchAlbums(newArtist);
+  // console.log(newArtist);
+});
+
+function handleError(res, reason, message, code) {
+  console.log("ERROR: " + reason);
+  res.status(code || 500).json({"error": message});
+}
 
 
 
 
-            
-  
 
 // app.post("/sendArtist", function(req, res){
 //     var newArtist = req.body;
@@ -137,7 +143,7 @@ var searchAlbums = function (query) {
 //           // console.log( 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] + 
 //           //   ' topped the charts for ' + doc['weeksAtOne'] + ' straight weeks.');
 //         var temp = doc['song'];
-        
+
 //         if (result.indexOf(temp)== -1) {
 //           result.push(temp);
 
@@ -146,7 +152,7 @@ var searchAlbums = function (query) {
 //   // console.log("inner:" + result);
 //     response.send(result);
 //       });
-  
+
 // });
 
 // app.get('/', function(request, response) {

@@ -11,20 +11,20 @@ var myapp = angular.module('trashApp', [
     controller: 'ExampleCtrl',
     templateUrl: 'example.html'
   });
-}).service("Albums", function($http){
-      this.sendSearch = function(artist) {
-        console.log(artist);
-        return $http.post("/sendArtist",{who: artist}).
-        then(function(response) {
-          return response;
-        }, function(response) {
-          console.log(response);
-          alert("Error finding contacts.");
-        });
+}).service("Albums", ["$http",function($http){
+  this.sendSearch = function(albumList) {
+    // console.log(albumList);
+    return $http.post("/sendList",albumList).
+    then(function(response) {
+      return response;
+    }, function(response) {
+      // console.log(response);
+      alert("Error finding contacts.");
+    });
   }
 
 
-})
+}])
 .controller('ExampleCtrl', function($scope, Albums) {
   var lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. " +
   "Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor." +
@@ -90,21 +90,35 @@ var myapp = angular.module('trashApp', [
           }
 
           this.sendArtist = function(){
-            Albums.sendSearch(this.artist);
+            var query = this.artist;
+            console.log(query);
+            var albumList = {list: []};
+
+            $.ajax({
+              url: 'https://api.spotify.com/v1/search',
+              data: {
+                q: query,
+                type: 'album'
+              },
+              success: function (response) {        
+                response.albums.items.forEach(function(album){
+                  var newAlbum = {
+                    artist: query,
+                    name: album.name, 
+                    year: album.release_date,
+                    imageurl: album.images[0].url
+                  };
+                  albumList.list.push(newAlbum);
+                }); 
+                Albums.sendSearch(albumList);
+              }
+
+            });
+
+            
           }
         });
 
-
-// ;
-
-
-//     myapp.config(function($stateProvider) {
-//   $stateProvider.state('user', {
-//     url:         '',
-//     controller: 'ExampleCtrl',
-//     templateUrl: 'example.html'
-//   });
-// });
 
 
 
