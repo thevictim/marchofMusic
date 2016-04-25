@@ -53,7 +53,7 @@ app.post("/sendList", function(req, res) {
   console.log('------------------------node post------------------------');
   var albumList = req.body.list;
   console.log('parse');
-  console.log(req.body);
+  console.log(albumList);
   if (!req.body.list) {
     handleError(res, "Invalid user input", "Must provide a first or last name.", 400);
   }
