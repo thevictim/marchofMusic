@@ -28,15 +28,24 @@
 
     <!-- Create some padding for body -->
     <style>
-  body { background-color: aliceblue; }
+  body { background-color: aliceblue;     padding: 20px;
+}
   timeline-footer { background-color: aliceblue; }
+#search-form, .form-control {
+    margin-bottom: 20px;
+}
+.cover {
+    width: 300px;
+    height: 300px;
+    display: inline-block;
+    background-size: cover;
+}
 </style>
 
     
   </head>
 
   <body ng-app="trashApp" >
-    
 
     <div ui-view></div>
 
@@ -47,4 +56,6 @@
     <script src="/js/app.js"></script>
     <script src="/js/controller.js"></script>
   </body>
+
+
 </html>

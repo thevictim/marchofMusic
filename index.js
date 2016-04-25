@@ -26,62 +26,96 @@ mongoose.connect(process.env.MONGODB_URI ,function(err){
 var db = mongoose.connection;
 
 db.once('open', function callback (){
-  var songSchema = mongoose.Schema({
-    decade: String,
-    artist: String, 
-    song: String,
-    weeksAtOne: Number
+  var albumSchema = mongoose.Schema({
+    artist: String,
+    name: String, 
+    year: Number,
+    imageurl: String
   });
-  var Song = mongoose.model('songs', songSchema);
+  var Album = mongoose.model('albums', albumSchema);
   // Create seed data
-  var seventies = new Song({
-    decade: '1970s',
-    artist: 'Debby Boone',
-    song: 'You Light Up My Life',
-    weeksAtOne: 10
+  var pf = new Album({
+    artist: 'Pink Floyd',
+    name: 'Dark Side of the Moon', 
+    year: 1971,
+    imageurl: 'asdffasd'
   });
 
-  var eighties = new Song({
-    decade: '1980s',
-    artist: 'Olivia Newton-John',
-    song: 'Physical',
-    weeksAtOne: 10
-  });
 
-  var nineties = new Song({
-    decade: '1990s',
-    artist: 'Mariah Carey',
-    song: 'One Sweet Day',
-    weeksAtOne: 16
-  });
-
-  seventies.save();
-  eighties.save();
-  nineties.save();
-
-  Song.update( {song:'One Sweet Day'}, {$set:{artist: 'Mariah Carey'}},
-    function (err, numberAffected, raw){
-      if (err) return handleError(error);
-      allsong = Song.find({weeksAtOne: {$gte: 10}}).sort({decade: 1});
-      // allsong.exec(function(err, docs){
-      //   if (err) throw err;
-      //   docs.forEach(function(doc){
-      //     console.log( 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] + 
-      //       ' topped the charts for ' + doc['weeksAtOne'] + ' straight weeks.');
-
-      //   });
+  pf.save();
 
 
-      // });
-    }
+  // Album.update( {song:'One Sweet Day'}, {$set:{artist: 'Mariah Carey'}},
+  //   function (err, numberAffected, raw){
+  //     if (err) return handleError(error);
+  //     allsong = Album.find({weeksAtOne: {$gte: 10}}).sort({decade: 1});
+  //     // allsong.exec(function(err, docs){
+  //     //   if (err) throw err;
+  //     //   docs.forEach(function(doc){
+  //     //     console.log( 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] + 
+  //     //       ' topped the charts for ' + doc['weeksAtOne'] + ' straight weeks.');
 
-    );
+  //     //   });
+
+
+  //     // });
+  //   }
+
+  //   );
 
 });
 
 
+app.post("/sendArtist", function(req, res) {
+console.log('hahahahahah');
+  var newArtist = req.body.who;
+
+  if (!req.body) {
+    handleError(res, "Invalid user input", "Must provide a first or last name.", 400);
+  }
+
+var searchAlbums = function (query) {
+    $.ajax({
+        url: 'https://api.spotify.com/v1/search',
+        data: {
+            q: query,
+            type: 'album'
+        },
+        success: function (response) {
+          for (album in response.albums.items){
+
+                        var newAlbum = new Album({
+                          artist: album.artist.name,
+                          name: album.name, 
+                          year: album.release_date,
+                          imageurl: album.images[0].url
+                        });
+
+                        db.collection(albums).insertOne(newAlbum, function(err, doc) {
+                            if (err) {
+                              handleError(res, err.message, "Failed to create new contact.");
+                            } else {
+                              res.status(201).json(doc.ops[0]);
+                            }
+                          });
+
+                        }      
+                }
+    });
+};
+    searchAlbums(newArtist);
+    console.log(newArtist);
+  });
 
 
+
+
+            
+  
+
+// app.post("/sendArtist", function(req, res){
+//     var newArtist = req.body;
+// });
 // views is directory for all template files
 // app.set('views', __dirname + '/views');
 // app.set('view engine', 'ejs');
