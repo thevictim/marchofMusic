@@ -1,6 +1,6 @@
 
 'use strict';
-
+var nameList = [];
 var myapp = angular.module('trashApp', [
   'angular-timeline', 'ngRoute','ngSanitize',
   'ui.router',
@@ -48,7 +48,7 @@ this.getAlbums = function(){
       badgeClass: 'info',
       badgeIconClass: 'glyphicon-check',
       title: albumName,
-      when: year+' '+month,
+      when: artist + '  '+ year+' '+month,
       year: year,
       month: month,
       contentHtml:'<img class="img-responsive" src="'+imageurl+'">'
@@ -59,8 +59,10 @@ this.getAlbums = function(){
       var when = album.year.toString();
       var year = when.substring(0,4);
       var month = when.length>4 ? when.substring(5,7):'';
-
-    $scope.addEvent(album.artist, album.name, year,month, album.imageurl);
+      if(nameList.indexOf(album.name)==-1){
+        $scope.addEvent(album.artist, album.name, year,month, album.imageurl);
+        nameList.push(album.name);
+      }
   });
         // optional: not mandatory (uses angular-scroll-animate)
         $scope.animateElementIn = function($el) {
@@ -87,7 +89,7 @@ this.getAlbums = function(){
           }
 
         $scope.sendArtist = function(){
-            var token = 'BQA3bItLVFgV6_pBf1MsXbpngPoSMkz5JIKuJeT7uLycuQ2-AuGweEXYIKhVRNl3BF3ipFZtoBO_Z8kUs3NO2vbPZjoQTPxlA773LsyXNpy0Ec-4BSzR6IAm5gZVHmUB6HfjBgg1nLdQ';
+            var token = 'BQDaz52vjhiYNLU8Bc5D8Df1pVeSlQJzLexz1pDd42wKCRTIpojSYNyZCa6nhzhEwOhiYpDw5XlQ4znLkUyUTzUtJg7dK-dTM6ZgwAGq-Jnv-r7A4mm4i29JbBO-46r_tlj7d9k3PndI';
             var query = $scope.artist;
             console.log(query);
             var albumList = {list: []};
@@ -108,9 +110,7 @@ this.getAlbums = function(){
                           },
                   data: {
                         album_type: 'album',
-                        limit: 10,
-                        offset: 10 
-
+                        limit: 10 
                   },
                   success: function(response){
                     response.items.forEach(function(album){
@@ -124,17 +124,23 @@ this.getAlbums = function(){
                               market: 'US'
                           },
                           success: function(response){
-                            var newAlbum = {
+                            var albumName = response.name;
+                            if(nameList.indexOf(albumName) == -1){
+                              nameList.push(albumName);
+                              var newAlbum = {
                               artist: response.artists[0].name,
-                              name: response.name, 
+                              name: albumName, 
                               year: response.release_date,
                               imageurl: response.images[0].url
                             };
-                            var when = response.release_date.toString();
-                            var year = when.substring(0,4);
-                            var month = when.length>4 ? when.substring(5,7):'';
-                            $scope.addEvent(response.artists[0].name, response.name, year, month, response.images[0].url);
-                            Albums.sendSearch(newAlbum);
+                              var when = response.release_date.toString();
+                              var year = when.substring(0,4);
+                              var month = when.length>4 ? when.substring(5,7):'';
+                              $scope.addEvent(response.artists[0].name, response.name, year, month, response.images[0].url);
+                              Albums.sendSearch(newAlbum);
+
+                            }
+                            
                           }
                         });
                       }); 

@@ -29,7 +29,6 @@ var albumSchema = mongoose.Schema({
 var Album = mongoose.model('albums', albumSchema);
 
 app.post("/sendList", function(req, res) {
-  console.log('------------------------post to node------------------------');
   var album = req.body;
   if (!req.body) {
     handleError(res, "Invalid user input", "Must provide a first or last name.", 400);
@@ -49,7 +48,7 @@ app.post("/sendList", function(req, res) {
       res.status(201).json(doc);
     }
   });
-  console.log('------------------------save completed------------------------');
+  console.log(newAlbum);
 });
 
 app.get("/getAlbums", function(req, res){
