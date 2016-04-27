@@ -1,31 +1,39 @@
 
 'use strict';
 var nameList = [];
-var token = 'BQCa-bvl8Y03xcydsd1kiyh7GKIoNIJ6DLm--SeSPd7gqwyXCBsq76El4-rTOm4mYCKkWbnOlBH3XCUOgAw9qzvlBCtuqWVVA5sv5xYPlqrwcnP52D8KRJ-0rJH7MkJAQcUYvs4WBD0X';
+var access_token = 'BQBCeW3iRJ23_cZ3Kz9YQQk6eeYs68xeWCRfSotObMxHPt5Fab-xCn76q6SlJc709DtAFs6qchZIFVDFUNs4KG36kks7KG1bjKimB5o3EOy2ZGmQi54twSVSvufukGCbaut9QpLhMIkBALUi1x7RP83n7nqDLHa3';
+var refresh_token = 'AQB9SG56ZsVEOJf_xjUXxUNiSxgqmO2bgqWdKZeKuwGxw0iX1UNBwWwkiTJhpy7DzzAcLwdeZu1k5bldNc1Bo1d-LFAteeK3PSnrGDtkaGNGhwBilArFAJBvOMwzwYg1nXQ>';
 var myapp = angular.module('trashApp', [
   'angular-timeline', 'ngRoute','ngSanitize',
   'ui.router',
   'angular-scroll-animate'])
-.config(function($routeProvider) {
-  $routeProvider.when('/', {
+.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+  $routeProvider.when('/start',{
+    controller: 'startCtr',
+    templateUrl: 'start.html'
+  }).when('/', {
     controller: 'ExampleCtrl',
     templateUrl: 'example.html',
     resolve: {
         'albums': function(Albums){
-          console.log('***********************');
-          // addEvent();
           return Albums.getAlbums();
         }
     }
-  });
-}).service("Albums", ["$http",function($http){
+  }).
+  otherwise({redirectTo:'/'});
+
+  $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false
+    });
+}]).service("Albums", ["$http",function($http){
   this.sendSearch = function(album) {
     // console.log(albumList);
     return $http.post("/sendList",album).
     then(function(response) {
       return response;
     }, function(response) {
-      // console.log(response);
+      console.log(response);
       alert("Cannot find artist.");
     });
   }
@@ -37,9 +45,51 @@ this.getAlbums = function(){
           alert("Error getting albums");
         });
 }
+this.login = function(){
+ return $http.get("/login").
+        then(function(response){
+          return response.data;
+        }, function(response){
+          console.log(response);
+          alert("Error log in ");
+        });
+}
+this.refresh = function(){
+  return $http.get("/refresh_token").
+        then(function(response){
+          return response.data;
+        }, function(response){
+          console.log(response);
+          alert("Error refresh token ");
+        });
+}
+
+this.getToken = function(){
+  return $http.get("/get_token").
+        then(function(response){
+          return response.data;
+        }, function(response){
+          console.log(response);
+          alert("Error getting token ");
+        });
+}
 
 }])
-.controller('ExampleCtrl', ['$scope', 'albums', 'Albums', function($scope, albums, Albums){
+.controller('startCtr', ['Albums','$scope' ,function($scope, Albums){
+          $scope.start = function(){
+                      console.log('-==========');
+
+            Albums.login().then(function (d){
+              console.log('here:   '+ d);
+              $window.location.href=d;
+            });
+            Albums.refresh().then(function(d){
+              console.log(d.access_token);
+              access_token = d.access_token;
+            });
+        };
+        }]).controller('ExampleCtrl', ['$location','$scope', 'albums', 'Albums', '$window', function($location, $scope, albums, Albums, $window){
+
   var lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. ";
 
   $scope.side = '';
@@ -47,7 +97,7 @@ this.getAlbums = function(){
   $scope.addEvent = function(artist, albumName, year,month, imageurl) {
     $scope.events.push({
       badgeClass: 'info',
-      badgeIconClass: 'glyphicon-check',
+      badgeIconClass: 'glyphicon-music',
       title: albumName,
       when: artist + '  '+ year+' '+month,
       year: year,
@@ -108,11 +158,11 @@ this.getAlbums = function(){
                 $.ajax({
                   url: 'https://api.spotify.com/v1/artists/'+ artist_id+'/albums',
                   headers: {
-                            "Authorization": 'Bearer '+ token
+                            "Authorization": 'Bearer '+ access_token
                           },
                   data: {
                         album_type: 'album',
-                        limit: 10 
+                        limit: 30 
                   },
                   success: function(response){
                     console.log("Number of albums: " + response.items.length);
@@ -121,7 +171,7 @@ this.getAlbums = function(){
                         $.ajax({
                           url: 'https://api.spotify.com/v1/albums/'+album_id,
                           headers: {
-                            "Authorization": 'Bearer '+ token
+                            "Authorization": 'Bearer '+ access_token
                           },
                           data: {
                               market: 'US'
@@ -155,6 +205,36 @@ this.getAlbums = function(){
 
             
           };
+          
+        //   $scope.start = function(){
+
+        //     Albums.login().then(function (d){
+        //       console.log('here:   '+ d);
+        //       $window.location.href=d;
+        //     });
+        //     // Albums.refresh().then(function(d){
+        //     //   console.log(d.access_token);
+        //     //   access_token = d.access_token;
+        //     //   refresh_token = d.refresh_token;
+        //     // });
+        //     console.log('refresh_token '+ refresh_token);
+        //     console.log('access_token '+ access_token);
+        // };
+
+        function tick(){
+            //get the mins of the current time
+            var mins = new Date().getMinutes();
+            if(mins == "00"){
+              Albums.refresh().then(function(d){
+              console.log(d.access_token);
+              access_token = d.access_token;
+              refresh_token = d.refresh_token;
+            });
+             }
+            console.log(access_token);
+        }
+
+        setInterval(function() { tick(); }, 30000);
 
         }]);
 

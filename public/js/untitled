@@ -1,0 +1,10 @@
+<div class="container-fluid">
+
+      <div class="container">
+        <h1>Welcome to the albums timeline!</h1>
+        <form id="search-form" ng-submit = "login()">
+          <input type="submit" id="search" class="btn btn-primary" value="Start" />
+        </form>
+      </div>  
+
+</div>

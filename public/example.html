@@ -13,12 +13,13 @@
   <button ng-click="leftAlign()">Left Side</button>
   <button ng-click="rightAlign()">Right Side</button>
   <button ng-click="defaultAlign()">Alternate Sides</button>
+  <button ng-click='start()'>start</button>
   <br/>
   <br/>
 
   <timeline>
     <!-- can also hard-code to side="left" or side="right" -->
-    <timeline-event ng-repeat="event in events | orderBy: ['-year', '-month']" side="{{side}}">
+    <timeline-event ng-repeat="event in events | orderBy: ['year', 'month']" side="{{side}}">
       <!-- uses angular-scroll-animate to give it some pop -->
       <timeline-badge class="{{event.badgeClass}} timeline-hidden"
                       when-visible="animateElementIn" when-not-visible="animateElementOut">
