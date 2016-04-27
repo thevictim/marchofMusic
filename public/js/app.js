@@ -1,17 +1,14 @@
 
 'use strict';
 var nameList = [];
-var access_token = 'BQBCeW3iRJ23_cZ3Kz9YQQk6eeYs68xeWCRfSotObMxHPt5Fab-xCn76q6SlJc709DtAFs6qchZIFVDFUNs4KG36kks7KG1bjKimB5o3EOy2ZGmQi54twSVSvufukGCbaut9QpLhMIkBALUi1x7RP83n7nqDLHa3';
-var refresh_token = 'AQB9SG56ZsVEOJf_xjUXxUNiSxgqmO2bgqWdKZeKuwGxw0iX1UNBwWwkiTJhpy7DzzAcLwdeZu1k5bldNc1Bo1d-LFAteeK3PSnrGDtkaGNGhwBilArFAJBvOMwzwYg1nXQ>';
+var access_token = 'BQCMxg4KB6A7Cm48cHF7sPjicZGPe0v1iXUpw8M4wyREBrCQ2r3Sf3uT32Wa6451BJhk3KYptBrzA_lbcuTije2qoMm0TPYjMgSKPF2EuMr6s_8NkWUbwbDK6iJduus8qFvTmz9l4SGW';
+var refresh_token = 'AQBCy3ca8ET96tPgXvXpmRlh1mL5ro_MbZM4Vyp6DmcYPfPIkQr5_X3X5flFkl7HGAQdszzGXti1hnPxEEY_ywdsXoTKBEUMgs2l2un6JBEs1SrE15heky7O0IhnL4eRBpE>';
 var myapp = angular.module('trashApp', [
   'angular-timeline', 'ngRoute','ngSanitize',
   'ui.router',
   'angular-scroll-animate'])
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-  $routeProvider.when('/start',{
-    controller: 'startCtr',
-    templateUrl: 'start.html'
-  }).when('/', {
+  $routeProvider.when('/', {
     controller: 'ExampleCtrl',
     templateUrl: 'example.html',
     resolve: {
@@ -19,8 +16,18 @@ var myapp = angular.module('trashApp', [
           return Albums.getAlbums();
         }
     }
-  }).
-  otherwise({redirectTo:'/'});
+  }).when('/access/:access_token/:refresh_token', {
+    controller: 'ExampleCtrl',
+    templateUrl: 'example.html',
+    resolve: {
+        'albums': function(Albums){
+          return Albums.getAlbums();
+        }
+    }
+  });
+  // .otherwise(
+  //   {redirectTo:'/'}
+  //   );
 
   $locationProvider.html5Mode({
       enabled: true,
@@ -46,17 +53,18 @@ this.getAlbums = function(){
         });
 }
 this.login = function(){
- return $http.get("/login").
-        then(function(response){
-          return response.data;
-        }, function(response){
-          console.log(response);
-          alert("Error log in ");
-        });
+ return $http.post("/login");
+        // then(function(response){
+        //   return response;
+        // }, function(response){
+        //   console.log(response);
+        //   alert("Error log in ");
+        // });
 }
 this.refresh = function(){
   return $http.get("/refresh_token").
         then(function(response){
+          console.log("refreshing!");
           return response.data;
         }, function(response){
           console.log(response);
@@ -75,22 +83,11 @@ this.getToken = function(){
 }
 
 }])
-.controller('startCtr', ['Albums','$scope' ,function($scope, Albums){
-          $scope.start = function(){
-                      console.log('-==========');
-
-            Albums.login().then(function (d){
-              console.log('here:   '+ d);
-              $window.location.href=d;
-            });
-            Albums.refresh().then(function(d){
-              console.log(d.access_token);
-              access_token = d.access_token;
-            });
-        };
-        }]).controller('ExampleCtrl', ['$location','$scope', 'albums', 'Albums', '$window', function($location, $scope, albums, Albums, $window){
+.controller('ExampleCtrl', ['$location','$scope', 'albums', 'Albums','$routeParams','$http', function($location, $scope, albums, Albums, $routeParams, $http){
 
   var lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. ";
+  // access_token = $routeParams.access_token || '';
+  refresh_token = $routeParams.refresh_token || '';
 
   $scope.side = '';
   $scope.events = [];
@@ -155,6 +152,7 @@ this.getToken = function(){
               success: function (response){        
                 var artist_id = response.artists.items[0].id;
                 console.log("Found id: "+ artist_id);
+                console.log("Passing token: " + access_token);
                 $.ajax({
                   url: 'https://api.spotify.com/v1/artists/'+ artist_id+'/albums',
                   headers: {
@@ -207,34 +205,52 @@ this.getToken = function(){
           };
           
         //   $scope.start = function(){
+        //         $http.get("/login").
+        //         then(function(response){
+        //           alert("back");
+                  
+        //         });
 
-        //     Albums.login().then(function (d){
-        //       console.log('here:   '+ d);
-        //       $window.location.href=d;
-        //     });
-        //     // Albums.refresh().then(function(d){
-        //     //   console.log(d.access_token);
-        //     //   access_token = d.access_token;
-        //     //   refresh_token = d.refresh_token;
-        //     // });
-        //     console.log('refresh_token '+ refresh_token);
-        //     console.log('access_token '+ access_token);
+        //         Albums.login();
+
+        //         Albums.login().then(function (d){
+        //           console.log('here:   '+ d);
+        //           $window.location.href=d;
+        //         });
+        //         Albums.refresh().then(function(d){
+        //           console.log("Get: " + d.access_token);
+        //           access_token = d.access_token;
+        //           refresh_token = d.refresh_token;
+        //         });
+               
+
+        //         $.ajax({
+        //           url: '/refresh_token',
+        //           data: {
+        //             'refresh_token': refresh_token
+        //           }
+        //         }).done(function(data) {
+        //           access_token = data.access_token;
+        //             refresh_token = data.refresh_token
+        //         });
+        //         console.log('refresh_token '+ refresh_token);
+        //         console.log('access_token '+ access_token);
         // };
 
-        function tick(){
-            //get the mins of the current time
-            var mins = new Date().getMinutes();
-            if(mins == "00"){
-              Albums.refresh().then(function(d){
-              console.log(d.access_token);
-              access_token = d.access_token;
-              refresh_token = d.refresh_token;
-            });
-             }
-            // console.log(access_token);
-        }
+        // function tick(){
+        //     //get the mins of the current time
+        //     var mins = new Date().getMinutes();
+        //     if(mins == "00"){
+        //       Albums.refresh().then(function(d){
+        //       console.log(d.access_token);
+        //       access_token = d.access_token;
+        //       refresh_token = d.refresh_token;
+        //     });
+        //      }
+        //     // console.log(access_token);
+        // }
 
-        setInterval(function() { tick(); }, 30000);
+        // setInterval(function() { tick(); }, 30000);
 
         }]);
 
