@@ -231,7 +231,7 @@ this.getToken = function(){
               refresh_token = d.refresh_token;
             });
              }
-            console.log(access_token);
+            // console.log(access_token);
         }
 
         setInterval(function() { tick(); }, 30000);
