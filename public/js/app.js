@@ -1,6 +1,7 @@
 
 'use strict';
 var nameList = [];
+var token = 'BQCa-bvl8Y03xcydsd1kiyh7GKIoNIJ6DLm--SeSPd7gqwyXCBsq76El4-rTOm4mYCKkWbnOlBH3XCUOgAw9qzvlBCtuqWVVA5sv5xYPlqrwcnP52D8KRJ-0rJH7MkJAQcUYvs4WBD0X';
 var myapp = angular.module('trashApp', [
   'angular-timeline', 'ngRoute','ngSanitize',
   'ui.router',
@@ -89,9 +90,9 @@ this.getAlbums = function(){
           }
 
         $scope.sendArtist = function(){
-            var token = 'BQDaz52vjhiYNLU8Bc5D8Df1pVeSlQJzLexz1pDd42wKCRTIpojSYNyZCa6nhzhEwOhiYpDw5XlQ4znLkUyUTzUtJg7dK-dTM6ZgwAGq-Jnv-r7A4mm4i29JbBO-46r_tlj7d9k3PndI';
+            
             var query = $scope.artist;
-            console.log(query);
+            console.log('Looking for: ' + query);
             var albumList = {list: []};
             $.ajax({
               url: 'https://api.spotify.com/v1/search',
@@ -103,6 +104,7 @@ this.getAlbums = function(){
               },
               success: function (response){        
                 var artist_id = response.artists.items[0].id;
+                console.log("Found id: "+ artist_id);
                 $.ajax({
                   url: 'https://api.spotify.com/v1/artists/'+ artist_id+'/albums',
                   headers: {
@@ -113,6 +115,7 @@ this.getAlbums = function(){
                         limit: 10 
                   },
                   success: function(response){
+                    console.log("Number of albums: " + response.items.length);
                     response.items.forEach(function(album){
                         var album_id = album.id;
                         $.ajax({
