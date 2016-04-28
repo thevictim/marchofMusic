@@ -160,10 +160,10 @@ this.getAlbums = function(){
                           },
                   data: {
                         album_type: 'album',
-                        limit: 10 
+                        limit: 20 
                   },
                   success: function(response){
-                    console.log("Number of albums: " + response.items.length);
+                    alert("Found " + response.items.length + " albums with unique name" );
                     response.items.forEach(function(album){
                         var album_id = album.id;
                         $.ajax({
