@@ -1,7 +1,7 @@
 
 'use strict';
 var nameList = [];
-var access_token = 'BQCMxg4KB6A7Cm48cHF7sPjicZGPe0v1iXUpw8M4wyREBrCQ2r3Sf3uT32Wa6451BJhk3KYptBrzA_lbcuTije2qoMm0TPYjMgSKPF2EuMr6s_8NkWUbwbDK6iJduus8qFvTmz9l4SGW';
+var access_token = 'BQAAJtwZoJ44JVRatp1cDo2-D0fnN5LH4RfGat6rub5nOLVnX3WwXWOnmXmZP6t-ASZY9moYkoNOMDl5J6rTYC_AiA2FfG_J-7AzfAegsYC4BAMxhj9s_3CMxlvePyc4RS5rAHUZ2t6l';
 var refresh_token = 'AQBCy3ca8ET96tPgXvXpmRlh1mL5ro_MbZM4Vyp6DmcYPfPIkQr5_X3X5flFkl7HGAQdszzGXti1hnPxEEY_ywdsXoTKBEUMgs2l2un6JBEs1SrE15heky7O0IhnL4eRBpE>';
 var myapp = angular.module('trashApp', [
   'angular-timeline', 'ngRoute','ngSanitize',
@@ -52,35 +52,35 @@ this.getAlbums = function(){
           alert("Error getting albums");
         });
 }
-this.login = function(){
- return $http.post("/login");
-        // then(function(response){
-        //   return response;
-        // }, function(response){
-        //   console.log(response);
-        //   alert("Error log in ");
-        // });
-}
-this.refresh = function(){
-  return $http.get("/refresh_token").
-        then(function(response){
-          console.log("refreshing!");
-          return response.data;
-        }, function(response){
-          console.log(response);
-          alert("Error refresh token ");
-        });
-}
+// this.login = function(){
+//  return $http.post("/login");
+//         // then(function(response){
+//         //   return response;
+//         // }, function(response){
+//         //   console.log(response);
+//         //   alert("Error log in ");
+//         // });
+// }
+// this.refresh = function(){
+//   return $http.get("/refresh_token").
+//         then(function(response){
+//           console.log("refreshing!");
+//           return response.data;
+//         }, function(response){
+//           console.log(response);
+//           alert("Error refresh token ");
+//         });
+// }
 
-this.getToken = function(){
-  return $http.get("/get_token").
-        then(function(response){
-          return response.data;
-        }, function(response){
-          console.log(response);
-          alert("Error getting token ");
-        });
-}
+// this.getToken = function(){
+//   return $http.get("/get_token").
+//         then(function(response){
+//           return response.data;
+//         }, function(response){
+//           console.log(response);
+//           alert("Error getting token ");
+//         });
+// }
 
 }])
 .controller('ExampleCtrl', ['$location','$scope', 'albums', 'Albums','$routeParams','$http', function($location, $scope, albums, Albums, $routeParams, $http){
@@ -160,7 +160,7 @@ this.getToken = function(){
                           },
                   data: {
                         album_type: 'album',
-                        limit: 30 
+                        limit: 10 
                   },
                   success: function(response){
                     console.log("Number of albums: " + response.items.length);
@@ -195,7 +195,10 @@ this.getToken = function(){
                           }
                         });
                       }); 
-                  }
+                  },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                            alert("Error: " + errorThrown + ". I'm sorry , the Spotify access token to get albums has expired. Email me guanyu@wustl.edu and I'll refresh the token asap."); 
+                        }   
                 });
               }
 
