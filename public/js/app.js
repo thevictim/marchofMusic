@@ -151,8 +151,8 @@ this.getAlbums = function(){
               },
               success: function (response){        
                 var artist_id = response.artists.items[0].id;
-                console.log("Found id: "+ artist_id);
-                console.log("Passing token: " + access_token);
+                var artist_name = response.artists.items[0].name;
+
                 $.ajax({
                   url: 'https://api.spotify.com/v1/artists/'+ artist_id+'/albums',
                   headers: {
@@ -163,7 +163,7 @@ this.getAlbums = function(){
                         limit: 20 
                   },
                   success: function(response){
-                    alert("Found " + response.items.length + " albums with unique name" );
+                    alert(artist_name + ":" + ' '+ response.items.length + " albums with unique name" );
                     response.items.forEach(function(album){
                         var album_id = album.id;
                         $.ajax({
